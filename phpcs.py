@@ -355,6 +355,23 @@ class PhpcsCommand():
 
         return self.error_lines[line + 1]
 
+    def get_next_error(self, line):
+        line = line + 1
+
+        cache_error=None
+        for error in self.report:
+            cache_error = error
+            error_line = error.get_line()
+
+            if int(error_line) > int(line):
+                break;
+
+        if cache_error != None:
+            pt = cache_error.get_point()
+            self.window.active_view().sel().clear()
+            self.window.active_view().sel().add(sublime.Region(pt))
+            self.window.active_view().show(pt)
+
 
 class PhpcsTextBase(sublime_plugin.TextCommand):
     """Base class for Text commands in the plugin, mainly here to check php files"""
@@ -367,7 +384,7 @@ class PhpcsTextBase(sublime_plugin.TextCommand):
         if not PhpcsTextBase.should_execute(self.view):
             return "Invalid file format"
         else:
-            return description
+            return self.description
 
     @staticmethod
     def should_execute(view):
@@ -404,6 +421,15 @@ class PhpcsShowPreviousErrors(PhpcsTextBase):
         return PhpcsTextBase.should_execute(self.view) \
             and PhpcsCommand.instance(self.view, False) \
             and len(PhpcsCommand.instance(self.view, False).error_list)
+
+
+class PhpcsGotoNextErrorCommand(PhpcsTextBase):
+    """Go to the next error from the current position"""
+    def run(self, args):
+        line = self.view.rowcol(self.view.sel()[0].end())[0]
+
+        cmd = PhpcsCommand.instance(self.view)
+        next_line = cmd.get_next_error(line)
 
 
 class PhpcsClearSnifferMarksCommand(PhpcsTextBase):
