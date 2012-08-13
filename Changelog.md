@@ -1,6 +1,10 @@
 Sublime PHP CodeSniffer, Linter and Mess Detector Plugin Changelog
 ==================================================================
 
+4.3
+---
+* Ability to fun PHP-CS-Fixer on save now. Thanks to [Cedric Lombardot](https://github.com/cedriclombardot) for raising the feature request
+
 4.2
 ---
 * Ability to configure if you want the errors to be highlighted in the editor. Thanks to [Aleksandr Gornostal](https://github.com/gornostal)
